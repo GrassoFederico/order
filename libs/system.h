@@ -6,11 +6,22 @@
 #ifndef __SYSTEM__
 #define __SYSTEM__
 
+/** Massimo numero di caratteri leggibili */
+#define MAX_CHARS  1024
+
+/** Valore in ASCII del carattere 0 */
+#define ASCII_ZERO 48
+#define ASCII_NINE 57
+
+/** Prototipi */
+void  clear_screen();
+char* input();
+
 /**
  *  Funzione di pulizia dello schermo
  *
  */
-void clear_screen()
+void  clear_screen()
 {
     /** 
      * Può tornare molto utile ma evitiamo di utilizzare funzioni di sistema in quanto renderebbe
@@ -22,6 +33,31 @@ void clear_screen()
      */
 
     printf("\e[2J\r");
+}
+
+/**
+ * Funzione per la lettura di input da parte dell'utente.
+ */
+char* input()
+{
+    char result[MAX_CHARS];
+
+    /** 
+     * Utilizzando fgets() funziona bene anche nei cicli. 
+     * stdin è il buffer che vogliamo usare per leggere l'input da riga di comando.
+     */
+    fgets(result, MAX_CHARS, stdin);
+
+    /** 
+     * Non posso ritornare direttamente il riferimento a 'result'!
+     * E' una variabile locale i cui riferimenti sparirebbero al termine della funzione.
+     * Ritorno invece un puntatore 'char*' ad uno spazio di memoria allocata grande quanto il vettore di caratteri
+     * moltiplicato per il numero di bytes occupati in memoria da ciascun tipo 'char'
+     */
+    char* result_pointer = (char*)malloc(strlen(result) * sizeof(char));
+
+    /** Copia la stringa contenuta in 'result' nello spazio appena allocato e ne resistuisce il puntatore */
+    return strcpy(result_pointer, result);
 }
 
 #endif
