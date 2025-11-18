@@ -19,7 +19,8 @@ void print_step(int step, char* message);
 
 /** Funzioni base del programma */
 int  get_dimension();   
-void init_array();
+int* get_array(int dimension);
+void print_array(int *array, int dimension);
 
 /** MAIN */
 int  main (int argc, char **argv)
@@ -30,17 +31,11 @@ int  main (int argc, char **argv)
     /** RECUPERO LA DIMENSIONE DEL VETTORE */
     int dimension = get_dimension();
 
-    // Inizializzo il vettore indicando la dimensione
-    int array[DIM];
-    
-    init_array(array);
+    /** VALORIZZO IL VETTORE */
+    int *array = get_array(dimension);
 
-    // while (array) {
-    //     printf("\n%d", array);
-    //     array++;
-    // }
-
-    
+    /** STAMPO IL CONTENUTO DEL VETTORE */
+    print_array(array, dimension);
 }
 
 /** Funzione usata per stampare l'instazione del programma */
@@ -55,7 +50,7 @@ void print_step(int step, char* message)
     printf("\n%d. %s: ", step, message);
 }
 
-// Viene richiesta la dimensione del vettore all'utente (massimo 20 elementi)
+/** Viene richiesta la dimensione del vettore all'utente (massimo 20 elementi) */
 int  get_dimension()
 {
     /** La dimensione del vettore */
@@ -93,15 +88,69 @@ int  get_dimension()
     return result;
 }
 
-// Inizializza il vettore
-void init_array(int result)
+/** Inizializza il vettore con i valori inseriti dall'utente */
+int* get_array(int dimension)
 {
-    int i = 0;
+    /** 
+     * Non posso ritornare direttamente il riferimento a 'result'!
+     * E' una variabile locale i cui riferimenti sparirebbero al termine della funzione.
+     * Ritorno invece un puntatore 'int*' che punta ad una porzione di memoria allocata grande quanto
+     * la dimensione indicata per lo spazio occupato dai singoli bytes di tipo "int".
+     */
+    int* result = (int *)malloc(dimension * sizeof(int));
 
-    while (i < DIM) {
-        printf("Inserisci il %d^ valore: ", (i + 1));
-        scanf("%d", &result);
+    /** 
+     * Il puntatore usato per iterare e popolare il vettore:
+     * in questo modo "result" punta sempre alla prima cella allocata.
+     */
+    int* iter = result;
 
-        i++;
+    int i;
+    int exit;
+
+    /** Stampa il secondo passaggio: il programma richiede l'inserimento dei dati */
+    print_step(2, "Inserire i dati nel vettore");
+
+    printf("\n\n");
+
+    for (i = 0; i < dimension; i++, iter++) {
+        do {
+            printf("Inserire il %d^ valore: ", (i + 1));
+
+            /** Imposto l'uscita dal ciclo come comportamento predefinito */
+            exit = 0;
+
+            *iter = atoi(input());
+
+            if (!*iter) {
+                clear_screen();
+                printf("Attenzione! Il valore inserito dev'essere un intero!\n");
+
+                /** Invalida la variabile exit costringendola a ripetere il ciclo */
+                exit = 1;
+            }
+        } while (exit);
     }
+
+    return result;
+}
+
+/** Stampa a video il contenuto del vettore */
+void print_array(int *array, int dimension)
+{
+    int i;
+
+    printf("\n\nStampa vettore:\n\n");
+
+    for (i = 0; i < dimension; i++) {
+        printf("%d", array[i]);
+
+        /** Se non sto ciclando sull'ultimo elemento inserisco lo spazio per dividere i valori */
+        if (i != (dimension - 1)) {
+            printf(" ");
+        }
+    }
+
+    /** Aggiungo un po' di spazio sul fonto */
+    printf("\n\n");
 }

@@ -40,7 +40,15 @@ void  clear_screen()
  */
 char* input()
 {
-    char result[MAX_CHARS];
+    /** 
+     * Non posso ritornare direttamente il riferimento a 'result'!
+     * E' una variabile locale i cui riferimenti sparirebbero al termine della funzione.
+     * Ritorno invece un puntatore 'char*' che punta ad una copia allocata di 'result'.
+     */
+    char* result_tmp;
+
+    /** Il vettore risultante */
+    char  result[MAX_CHARS];
 
     /** 
      * Utilizzando fgets() funziona bene anche nei cicli. 
@@ -48,16 +56,13 @@ char* input()
      */
     fgets(result, MAX_CHARS, stdin);
 
-    /** 
-     * Non posso ritornare direttamente il riferimento a 'result'!
-     * E' una variabile locale i cui riferimenti sparirebbero al termine della funzione.
-     * Ritorno invece un puntatore 'char*' ad uno spazio di memoria allocata grande quanto il vettore di caratteri
-     * moltiplicato per il numero di bytes occupati in memoria da ciascun tipo 'char'
-     */
-    char* result_pointer = (char*)malloc(strlen(result) * sizeof(char));
+    /** Alloco una copia del vettore di caratteri */
+    result_tmp = (char *)malloc(strlen(result) * sizeof(char));
 
     /** Copia la stringa contenuta in 'result' nello spazio appena allocato e ne resistuisce il puntatore */
-    return strcpy(result_pointer, result);
+    strcpy(result_tmp, result);
+
+    return result_tmp;
 }
 
 #endif
