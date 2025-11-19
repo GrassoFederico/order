@@ -21,6 +21,9 @@ void print_step(int step, char* message);
 int  get_dimension();   
 int* get_array(int dimension);
 void print_array(int *array, int dimension);
+int  print_menu();
+void sort_desc(int *array, int start, int end);
+void find(int needle, int *array, int dimension);
 
 /** MAIN */
 int  main (int argc, char **argv)
@@ -36,6 +39,23 @@ int  main (int argc, char **argv)
 
     /** STAMPO IL CONTENUTO DEL VETTORE */
     print_array(array, dimension);
+
+    /** STAMPO IL MENU PER LE OPERAZIONI DA FARE SUL VETTORE */
+    int option;
+    
+    do {
+        option = print_menu();
+
+        if (option == 1) {
+            sort_desc(array, 0, (dimension - 1));
+            print_array(array, dimension);
+        }
+
+    } while (option != 3);
+
+    printf("\n\nBYE BYE!\n\n");
+
+    return 0;
 }
 
 /** Funzione usata per stampare l'instazione del programma */
@@ -153,4 +173,73 @@ void print_array(int *array, int dimension)
 
     /** Aggiungo un po' di spazio sul fonto */
     printf("\n\n");
+}
+
+/** Stampa il menu con le opzioni disponibili */
+int print_menu()
+{
+    int result;
+    int exit;
+
+    do {
+        printf("\n\nMENU\n\n");
+        printf("1. Ordinamento decrescente\n");
+        printf("2. Ricerca di un valore inserito da tastiera\n");
+        printf("3. Esci\n\n");
+
+        /** Come comportamento predefinito imposto l'uscita dal ciclo */
+        exit = 0;
+
+        result = atoi(input());
+
+        if ((result < 1) || (result > 3)) {
+            clear_screen();
+            printf("Attenzione! L'opzione selezionata non e' valida! Riprova");
+
+            exit = 1;
+        }
+
+    } while (exit);
+
+    return result;
+}
+
+/** Ordina in senso decrescente il vettore */
+void sort_desc(int *array, int start, int end)
+{
+    /* L'idea è quella di partire agli estremi del vettore e scambiare i valori se non ordinati
+     * stringendo man mano l'intervallo
+     */
+    int swap;
+    int ordered = 1;
+
+    /** Se gli indici di posizione si incrociano ho terminato il controllo di ordinamento */
+    if (start > end) {
+        return;
+    }
+
+    /** Se gli elementi agli estremi dell'intervallo non sono ordinati li inverto */
+    if (array[start] < array[end]) {
+        swap = array[end];
+        array[end] = array[start];
+        array[start] = swap;
+
+        /** Invalido l'ordinamento */
+        ordered = 0;
+    }
+
+    /** Rieseguo l'ordinamento stringendo l'intervallo */
+    sort_desc(array, start, (end - 1));
+    sort_desc(array, (start + 1), end);
+
+    /** Se non è risultato ordinato divido a metà il vettore e ripeto l'ordinamento */
+    if (!ordered) {
+        sort_desc(array, start, end);
+    }
+}
+
+/** Cerca un elemento all'interno del vettore */
+void find(int needle, int *array, int dimension)
+{
+
 }
