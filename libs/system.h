@@ -13,10 +13,6 @@
 #define ASCII_ZERO 48
 #define ASCII_NINE 57
 
-/** Prototipi */
-void  clear_screen();
-char* input();
-
 /**
  *  Funzione di pulizia dello schermo
  *
