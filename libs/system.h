@@ -65,4 +65,38 @@ char* input()
     return result_tmp;
 }
 
+/**
+ * Funzione per arrotondare un numero con virgola per eccesso
+ */
+int ceiling(double number) {
+    /* Converto il numero come intero eliminando la parte decimale */
+    int result = (int)number;
+
+    /* Se il numero supera in grandezza la sua versione intera */
+    if (number > (double)result) {
+        
+        /* Arrotondo per eccesso aggiungendo 1 */
+        result++;
+    }
+
+    return result;
+}
+
+/**
+ * Funzione per arrotondare un numero con virgola per difetto
+ */
+int base(double number) {
+    /* Converto il numero come intero eliminando la parte decimale */
+    int result = (int)number;
+
+    /* Se il numero supera in grandezza la sua versione intera */
+    if (number > (double)result) {
+        
+        /* Arrotondo per difetto togliendo 1 */
+        result--;
+    }
+
+    return result;
+}
+
 #endif

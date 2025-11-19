@@ -22,8 +22,8 @@ int  get_dimension();
 int* get_array(int dimension);
 void print_array(int *array, int dimension);
 int  print_menu();
+void dichotomic_search(int needle, int *array, int start, int end, int middle);
 void sort_desc(int *array, int start, int end);
-void find(int needle, int *array, int dimension);
 
 /** MAIN */
 int  main (int argc, char **argv)
@@ -46,8 +46,27 @@ int  main (int argc, char **argv)
     do {
         option = print_menu();
 
+        /** Ordinamento decrescente vettore */
         if (option == 1) {
             sort_desc(array, 0, (dimension - 1));
+            print_array(array, dimension);
+        }
+
+        /** Ricerca elemento in vettore */
+        if (option == 2) {
+            printf("\nInserisci il numero da cercare: ");
+            int needle = atoi(input());
+
+            if (!needle) {
+                clear_screen();
+                printf("Attenzione! Il valore inserito dev'essere un intero!\n");
+
+                continue;
+            }
+
+            /** Implementiamo una ricerca dichotomica */
+            dichotomic_search(needle, array, 0, (dimension - 1), ceiling((double)(dimension - 1) / 2));
+            
             print_array(array, dimension);
         }
 
@@ -204,6 +223,41 @@ int print_menu()
     return result;
 }
 
+/** Cerca un elemento all'interno del vettore */
+void dichotomic_search(int needle, int *array, int start, int end, int middle)
+{
+    /** Per essere efficace, occorre prima ordinare il vettore */
+    sort_desc(array, start, end);
+
+    /** Recuperiamo il valore a metà del vettore e valutiamo:*/
+
+    /** Se è uguale al valore cercato, ritorniamo il valore */
+    if (needle == array[middle]) {
+        printf("\nHo trovato il valore %d alla posizione %d del vettore!", needle, middle);
+
+        return;
+    }
+
+    /** Se arriva per approssimazione  */
+    if (((middle == start) || (middle == end)) && (needle != start) && (needle != end)) {
+        printf("\nL'elemento %d cercato non esiste!", needle);
+
+        return;
+    }
+
+    /** Se è maggiore rispetto al valore cercato, vuol dire che dobbiamo riprocedere sulla metà destra del vettore */
+    if (array[middle] > needle) {
+        // Middle arrotonda per eccesso spostandosi per indici più grandi
+        dichotomic_search(needle, array, middle, end, ceiling((double)(middle + end) / 2));
+    }
+
+    /** Se è minore rispetto al valore cercato, vuol dire che dobbiamo riprocedere sulla metà sinistra del vettore */
+    if (array[middle] < needle) {
+        // Middle arrotonda per difetto spostandosi per indici più piccoli
+        dichotomic_search(needle, array, start, middle, base((double)(start + middle) / 2));
+    }
+}
+
 /** Ordina in senso decrescente il vettore */
 void sort_desc(int *array, int start, int end)
 {
@@ -236,10 +290,4 @@ void sort_desc(int *array, int start, int end)
     if (!ordered) {
         sort_desc(array, start, end);
     }
-}
-
-/** Cerca un elemento all'interno del vettore */
-void find(int needle, int *array, int dimension)
-{
-
 }
